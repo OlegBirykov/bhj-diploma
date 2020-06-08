@@ -38,8 +38,10 @@ const createRequest = (options = {}) => {
           
     if (this.status === 200) { 
       callback(null, this.response);
-    } else {
+    } else if (this.status) {
       callback({ status: this.status, statusText: this.statusText });
+    } else {
+      callback({ status: 0, statusText: 'Нет связи с сервером' });      
     }
   });
  

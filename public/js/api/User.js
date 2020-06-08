@@ -30,12 +30,11 @@ class User {
   static current() {
     try {
       const user = JSON.parse(localStorage['user']);
-      if (user.id && user.name)
-        return user;   
+      return user;   
     } catch {
+      this.unsetCurrent();
+      return;
     }
-    this.unsetCurrent();
-    return;
   }
 
   /**
@@ -50,7 +49,7 @@ class User {
       method: 'GET',
       
       callback: (err, response) => {
-        if (response.success) {
+        if (response && response.success) {
           this.setCurrent(response);
         } else {
           this.unsetCurrent();
@@ -74,7 +73,7 @@ class User {
       method: 'POST',
       
       callback: (err, response) => {
-        if (response.success)
+        if (response && response.success)
           this.setCurrent(response.user);      
         callback(err, response);
       }
@@ -95,7 +94,7 @@ class User {
       method: 'POST',
       
       callback: (err, response) => {
-        if (response.success) {
+        if (response && response.success) {
           this.setCurrent(response.user);
         } else {
           this.unsetCurrent();
