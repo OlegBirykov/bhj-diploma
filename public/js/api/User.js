@@ -50,7 +50,7 @@ class User {
       
       callback: (err, response) => {
         if (response && response.success) {
-          this.setCurrent(response);
+          this.setCurrent(response.user);
         } else {
           this.unsetCurrent();
         }

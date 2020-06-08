@@ -12,7 +12,7 @@ class AsyncForm {
    * Сохраняет переданный элемент и регистрирует события
    * через registerEvents()
    * */
-  constructor( element ) {
+  constructor(element) {
     if (!element) 
       throw new Error('Пустой элемент в конструкторе класса AsyncForm');
     this.element = element;
