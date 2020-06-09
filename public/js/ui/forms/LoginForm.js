@@ -27,8 +27,8 @@ class LoginForm extends AsyncForm {
       for (const input of this.element.querySelectorAll('input'))
         input.value = '';
       
-      App.setState('user-logged');
-      App.getModal('login').close();
+      App.setState('user-logged');  
+      App.getModal(this.element.closest('.modal').dataset.modalId).close();
     });
     
   }

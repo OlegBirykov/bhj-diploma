@@ -31,7 +31,7 @@ class AccountsWidget {
 
     this.element.querySelector('.create-account').addEventListener('click', e => {
       e.preventDefault();
-      App.getModal('createAccount').open(); 
+      App.getModal('newAccount').open(); 
     });
 
     for (const account of this.element.querySelectorAll('.account'))   

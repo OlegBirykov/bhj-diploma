@@ -28,7 +28,7 @@ class RegisterForm extends AsyncForm {
         input.value = '';
       
       App.setState('user-logged');
-      App.getModal('register').close();
+      App.getModal(this.element.closest('.modal').dataset.modalId).close();
     });
     
   }

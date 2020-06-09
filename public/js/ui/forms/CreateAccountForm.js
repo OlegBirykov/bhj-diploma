@@ -24,7 +24,8 @@ class CreateAccountForm extends AsyncForm {
         return;
       } 
       
-      App.getModal('createAccount').close();  
+      console.log(this.element.closest('.modal').dataset.modalId);
+      App.getModal(this.element.closest('.modal').dataset.modalId).close(); 
       App.update(); 
       
       for (const input of this.element.querySelectorAll('input'))
