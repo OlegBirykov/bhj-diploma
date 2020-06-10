@@ -21,7 +21,7 @@ class TransactionsPage {
    * Вызывает метод render для отрисовки страницы
    * */
   update() {
-    this.render(this.lastOption);
+    this.render(this.lastOptions);
   }
 
   /**
@@ -30,8 +30,19 @@ class TransactionsPage {
    * методами TransactionsPage.removeTransaction и
    * TransactionsPage.removeAccount соответственно
    * */
-  registerEvents() {//#######################################################################################
+  registerEvents() {
+    
+    this.element.querySelector('.remove-account').addEventListener('click', e => {
+      e.preventDefault();
+      this.removeAccount();
+    });
 
+    for (const button of this.element.querySelectorAll('.transaction__remove'))
+      button.addEventListener('click', e => {
+        e.preventDefault();
+        this.removeTransaction(button.dataset.id);
+      });
+    
   }
 
   /**
@@ -42,16 +53,52 @@ class TransactionsPage {
    * По успешному удалению необходимо вызвать метод App.update()
    * для обновления приложения
    * */
-  removeAccount() {//#######################################################################################
-
+  removeAccount() {
+    if(!this.lastOptions)
+      return;
+    if(!confirm('Вы действительно хотите удалить этот счёт?'))
+      return;
+    Account.remove(this.lastOptions.account_id, {}, (err, response) => {
+      
+      if (err) {
+        alert(JSON.stringify(err));
+        return;
+      }   
+      if (!response.success) {
+        alert(JSON.stringify(response));
+        return;
+      }  
+      
+      this.clear();
+      App.update();
+      
+    });
+    
   }
 
   /**
    * Удаляет транзакцию (доход или расход). Требует
-   * подтверждеия действия (с помощью confirm()).
+   * подтверждения действия (с помощью confirm()).
    * По удалению транзакции вызовите метод App.update()
    * */
-  removeTransaction(id) {//#######################################################################################
+  removeTransaction(id) {
+    if(!confirm('Вы действительно хотите удалить эту транзакцию?'))
+      return;
+    
+    Transaction.remove(id, {}, (err, response) => {
+      
+      if (err) {
+        alert(JSON.stringify(err));
+        return;
+      }   
+      if (!response.success) {
+        alert(JSON.stringify(response));
+        return;
+      }  
+      
+      App.update();
+      
+    });
 
   }
 
@@ -99,8 +146,10 @@ class TransactionsPage {
    * TransactionsPage.renderTransactions() с пустым массивом.
    * Устанавливает заголовок: «Название счёта»
    * */
-  clear() {//#######################################################################################
-
+  clear() {
+    this.renderTransactions([]);
+    this.renderTitle('Название счёта');
+    this.lastOptions = null;
   }
 
   /**
@@ -114,8 +163,28 @@ class TransactionsPage {
    * Форматирует дату в формате 2019-03-10 03:20:41 (строка)
    * в формат «10 марта 2019 г. в 03:20»
    * */
-  formatDate(date) {//#######################################################################################
-    return(date + ' ага');
+  formatDate(date) {
+    const monthNames = [
+      'января', 
+      'февраля',
+      'марта', 
+      'апреля', 
+      'мая', 
+      'июня', 
+      'июля', 
+      'августа', 
+      'сентября', 
+      'октября', 
+      'ноября', 
+      'декабря'
+    ];
+    
+    let month;
+    month = monthNames[date.slice(5,7) - 1];
+    if (!month)
+      month = '*****';
+    
+    return(`${date.slice(8,10)} ${month} ${date.slice(0,4)} г. в ${date.slice(11,16)}`);
   }
 
   /**
@@ -123,7 +192,7 @@ class TransactionsPage {
    * item - объект с информацией о транзакции
    * */
   getTransactionHTML(item) {
-    return `<div class="transaction transaction_${item.type == 'income' ? 'income' : 'expense'} row">
+    return `<div class="transaction transaction_${item.type.toLowerCase() === 'income' ? 'income' : 'expense'} row">
               <div class="col-md-7 transaction__details">
                 <div class="transaction__icon">
                   <span class="fa fa-money fa-2x"></span>
@@ -157,5 +226,12 @@ class TransactionsPage {
     for (const item of data)
       transactions += this.getTransactionHTML(item);
     this.element.querySelector('.content').innerHTML = transactions;
+
+    for (const button of this.element.querySelectorAll('.transaction__remove'))
+      button.addEventListener('click', e => {
+        e.preventDefault();
+        this.removeTransaction(button.dataset.id);
+      });
+      
   }
 }

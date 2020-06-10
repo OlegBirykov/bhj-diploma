@@ -42,7 +42,6 @@ class AsyncForm {
     let result = {};
     for (const item of formData.entries()) 
       result[item[0]] = item[1];
-    console.log(result);
     return result;
   }
 
